@@ -1,0 +1,4 @@
+install: 
+  - FILE="-Dfile=prividlib-release.aar"
+  - mvn install:install-file $FILE -DgroupId=com.openinfer -DartifactId=cryptonets-lib -Dversion=1.0 -Dpackaging=aar
+  - -DgeneratePom=true
