@@ -1,4 +1,4 @@
-# Private ID Android Library
+# Private ID Android library - CryptoNets™
 
 Powered by Private Identity® - https://private.id
 
