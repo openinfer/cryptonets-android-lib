@@ -1,4 +1,4 @@
-# Private ID WebAssembly SDK
+# Private ID Android Library
 
 Powered by Private Identity® - https://private.id
 
