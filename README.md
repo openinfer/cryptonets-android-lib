@@ -7,8 +7,6 @@ privacy.
 
 ## Benefits
 
----
-
 - Face biometric capture
 - Encrypted face recognition
 - 1:n biometric match in 60ms constant time
@@ -20,8 +18,6 @@ privacy.
 - Predicts in 50ms with or without network using local storage
 
 ## Download
-
----
 
 Use Gradle
 
@@ -38,8 +34,6 @@ implementation 'com.github.openinfer:cryptonets-lib:1.0'
 Or download and add the `*.AAR` manually from this repository.
 
 ## How do I use CryptoNets™ Android library?
-
----
 
 - Initialize the library once only
 ```kotlin
@@ -110,15 +104,11 @@ val imageInfo = CommonMethods.getImageDetailLib(it, orientation) // ImageRawData
 
 ## Compatibility
 
----
-
 - <b>Min Android SDK</b>: CryptoNets™ requires a minimum API level of 21
 - <b>Compile Android SDK</b>: CryptoNets™ requires you to compile against API 32 or lower. API 33 is not supported now.
 
 
 ## Samples
-
----
 
 This repository contains all available samples: https://github.com/openinfer/samples
 
