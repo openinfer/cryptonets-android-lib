@@ -8,8 +8,9 @@ privacy.
 ## Benefits
 
 - Face biometric capture
-- Encrypted face recognition
-- 1:n biometric match in 60ms constant time
+- Encrypted face recognition every 200ms
+- 1:N biometric match in 60ms constant time
+- Human age estimation
 - Unlimited users (unlimited gallery size)
 - Fair, accurate and unbiased
 - Preserves user privacy with neural network cryptography + fully homomorphic encryption (CryptoNets)
@@ -17,9 +18,13 @@ privacy.
 - Exempt from GDPR, CCPA, BIPA, and HIPAA privacy law obligations
 - Predicts in 50ms with or without network using local storage
 
-## Download
+## How do I use CryptoNets™ Android library?
 
-Use Gradle
+### Prerequisite
+- Sign up on the waitlist on https://private.id to obtain your API Key.
+
+### How To Install
+- Use Gradle
 
 ```groovy
 // project's gradle or settings.gradle
@@ -28,79 +33,93 @@ repositories {
 }
 
 // app's gradle
-implementation 'com.github.openinfer:cryptonets-lib:1.0'
+implementation 'com.github.openinfer:cryptonets-lib:1.1'
 ```
 
-Or download and add the `*.AAR` manually from this repository.
+- Or download and add the `*.AAR` manually from this repository.
 
-## How do I use CryptoNets™ Android library?
+### Implementation
 
-- Initialize the library once only
+#### Initialization:
+- initialize the library once only in your application class
 ```kotlin
-val fileStoragePath = context.filesDir.absolutePath + "/your_folder/"
-val prividFheFace = PrividFheFace(fileStoragePath, context) 
-prividFheFace.FHEConfigureUrl("https://devel.private.id/node/", 42)
-prividFheFace.FHEConfigureUrl("00000000000000001962", 46)
+val config = PrivateIdentityConfig
+        .Builder(context, "Your api key")
+        .serverUrl("Your server url") //optional
+        .localStorage("Your storage path") // optional - default is your internal app's folder
+        .logEnabled(true) // optional - default is false
+        .build()
+val pi = PrivateIdentity(config)
 ```
+#### ImageData
+- This is the class that converts `Bitmap` to `bytes` to interact with the library. 
 
-- Load image as `bitmap` and convert the bitmap to `ImageRawDataInfo`:
 ```kotlin
 val bitmap = yourLoadImageMethod()
-val imageInfo = CommonMethods.getImageDetailLib(it, orientation) // ImageRawDataInfo
+val imageData = ImageData(bitmap) // this should be call off UI thread to avoid ANR
 ```
 
-- Use  `ImageRawDataInfo` with the `prividFheFace` instance:
+#### Validate Input Image
 
-  - Check image's validity:
-    ```kotlin
-    val responseIsValid = prividFheFace.isValid(imageRawDataInfo.imageData, imageRawDataInfo.width, imageRawDataInfo.height, 0)
-    if (responseIsValid.status == 0) {
-        // valid
-    } else {
-        // invalid
-    }
-    ```
-  - Predict user:
-    ```kotlin
-    val responsePredict = prividFheFace.predict(imageRawDataInfo.imageData, imageRawDataInfo.width, imageRawDataInfo.height)
-    if (responsePredict.status == 0) { 
-        // user exists
-        val uuid = responsePredict.piModel.uuid
-        val guid = responsePredict.piModel.guid
-    } else {
-        // no user
-    }
-    ```
-  - Enroll user:
-    
-    - We need 10 valid images to enroll
-    ```kotlin
-    private val enrollImageByteArray = arrayListOf<ByteArray>() // array of images
-    // check images' validity
-    val responseIsValid = prividFheFace.isValid(imageRawDataInfo.imageData, imageRawDataInfo.width, imageRawDataInfo.height, 1)
-    if (responseIsValid.status == 0) {
-        enrollImageByteArray.add(imageRawDataInfo.imageData)
-        if (enrollImageByteArray.size == 10) { // enroll after 10 valid images
-            val enrollResult = prividFheFace.enroll(enrollImageByteArray, imageRawDataInfo.height, imageRawDataInfo.width, imageRawDataInfo.byteCount)
-            if (enrollResult.status == 0) {
-                val guid = enrollResult.piModel.guid
-                val uuid = enrollResult.piModel.uuid
-            } else {
-                // enroll failed
-            }
-        }
-    }
-    ```
-    
-  - Delete user:
-    ```kotlin
-    val deleteResult = prividFheFace.delete(uuid)
-    if (deleteResult.status == 0) {
-        // success
-    } else {
-        // failed
-    }
-    ``` 
+- The function detects if there is a valid face in the 'ImageData` object:
+```kotlin
+val faceValidateResult = privateIdentity.validate(imageData)
+```
+- In `faceValidateResult`, we have `ageFactor` and `faceValidation`:
+
+```java
+public enum FaceValidation {
+  InvalidImage(-100),
+  NoFace(-1),
+  ValidBiometric(0),
+  ImageSpoof(1),
+  VideoSpoof(2),
+  TooClose(3),
+  TooFaraway(4),
+  TooFarToRight(5),
+  TooFarToLeft(6),
+  TooFarUp(7),
+  TooFarDown(8),
+  TooBlurry(9),
+  GlassesOn(10),
+  MaskOn(11),
+  ChinTooFarLeft(12),
+  ChinTooFarRight(13),
+  ChinTooFarUp(14),
+  ChinTooFarDown(15),
+  ServerError(27),
+}
+```
+
+#### Authenticate/Predict A User
+- The function detects if there is a valid face in the 'ImageData` object and tries to authenticate a user on back-end
+```kotlin
+val facePredictResult = privateIdentity.predict(imageData)
+// Result:
+// - FacePredictResult - return null means invalid image
+// - FacePredictResult - empty means user is not registered
+// - FacePredictResult contains uuid, guid if the user is registered
+```
+
+#### Register A New User
+- Before registering a new user, we should check whether the image is valid or not:
+```kotlin
+val faceValidateResult = privateIdentity.validateToEnroll(imageData)
+if (faceValidateResult.faceValidation == FaceValidation.ValidBiometric) { // image is valid
+  val faceEnrollResult = privateIdentity.enroll(imageDataList) // the imageDataList must be not empty
+  // faceEnrollResult - returns null means failed
+  // faceEnrollResult contains uuid, guid if the process is running successfully
+}
+```
+- Note: we can `enroll` a new user with a single image, but it's recommended to enroll with more than 5 images.
+
+#### Delete A User Data
+If you want to delete user data from the back-end you can do it using the user identifier (uuid) previously obtained from `enroll` or `predict` method:
+```kotlin
+val faceDeleteResult = privateIdentity.delete(uuid)
+// FaceDeleteResult - returns null if failed
+// FaceDeleteResult object with status and message
+```
 
 ## Compatibility
 
