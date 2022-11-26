@@ -92,7 +92,7 @@ public enum FaceValidation {
 ```
 
 #### Authenticate/Predict A User
-- The function detects if there is a valid face in the 'ImageData` object and tries to authenticate a user on back-end
+- The function detects if there is a valid face in the `ImageData` object and tries to authenticate a user on back-end
 ```kotlin
 val facePredictResult = privateIdentity.predict(imageData)
 // Result:
