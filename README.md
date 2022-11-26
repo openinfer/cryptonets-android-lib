@@ -39,6 +39,7 @@ implementation 'com.github.openinfer:cryptonets-lib:1.1'
 - Or download and add the `*.AAR` manually from this repository.
 
 ### Implementation
+- Warning: all methods except the `initialization` process should be called off UI thread to avoid ANR issue.
 
 #### Initialization:
 - initialize the library once only in your application class
