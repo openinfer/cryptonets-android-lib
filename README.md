@@ -33,7 +33,7 @@ repositories {
 }
 
 // app's gradle
-implementation 'com.github.openinfer:cryptonets-lib:1.1.1'
+implementation 'com.github.openinfer:cryptonets-lib:1.1.2'
 ```
 
 - Or download and add the `*.AAR` manually from this repository.
@@ -115,11 +115,37 @@ if (faceValidateResult.faceValidation == FaceValidation.ValidBiometric) { // ima
 - Note: we can `enroll` a new user with a single image, but it's recommended to enroll with more than 5 images.
 
 #### Delete A User Data
-If you want to delete user data from the back-end you can do it using the user identifier (uuid) previously obtained from `enroll` or `predict` method:
+- If you want to delete user data from the back-end you can do it using the user identifier (uuid) previously obtained from `enroll` or `predict` method:
 ```kotlin
 val faceDeleteResult = privateIdentity.delete(uuid)
 // FaceDeleteResult - returns null if failed
 // FaceDeleteResult object with status and message
+```
+
+#### Validate driver lience's frontside
+- This method is used to validate the face from frontside of a driver license:
+
+```kotlin
+val documentResult = privateIdentity.validateDocument(imageData)
+if (documentResult.isValid) { // valid license
+    // documentResult.uuid 
+    // documentResult.guid
+} else {
+    // not a valid face
+}
+```
+
+#### Validate driver lience's backside
+- This function scans the barcode from backside of the license: 
+
+```kotlin
+val barcodeResult = privateIdentity.validateBarcode(imageData)
+if (barcodeResult.isValid) { // valid barcode
+    // barcodeResult.firstName
+    // barcodeResult.lastName
+    // ... Look at the BarcodeResult.java for more information
+} else {
+}
 ```
 
 ## Compatibility
