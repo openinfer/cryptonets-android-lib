@@ -33,7 +33,7 @@ repositories {
 }
 
 // app's gradle
-implementation 'com.github.openinfer:cryptonets-lib:1.1.3'
+implementation 'com.github.openinfer:cryptonets-lib:1.1.4'
 ```
 
 - Or download and add the `*.AAR` manually from this repository.
