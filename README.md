@@ -33,7 +33,7 @@ repositories {
 }
 
 // app's gradle
-implementation 'com.github.openinfer:cryptonets-lib:1.1.2'
+implementation 'com.github.openinfer:cryptonets-lib:1.1.3'
 ```
 
 - Or download and add the `*.AAR` manually from this repository.
@@ -64,7 +64,7 @@ val imageData = ImageData(bitmap) // this should be call off UI thread to avoid 
 
 - The function detects if there is a valid face in the 'ImageData` object:
 ```kotlin
-val faceValidateResult = privateIdentity.validate(imageData)
+val faceValidateResult = privateIdentity.is_valid(imageData)
 ```
 - In `faceValidateResult`, we have `ageFactor` and `faceValidation`:
 
@@ -105,7 +105,7 @@ val facePredictResult = privateIdentity.predict(imageData)
 #### Register A New User
 - Before registering a new user, we should check whether the image is valid or not:
 ```kotlin
-val faceValidateResult = privateIdentity.validateToEnroll(imageData)
+val faceValidateResult = privateIdentity.isValidToEnroll(imageData)
 if (faceValidateResult.faceValidation == FaceValidation.ValidBiometric) { // image is valid
   val faceEnrollResult = privateIdentity.enroll(imageDataList) // the imageDataList must be not empty
   // faceEnrollResult - returns null means failed
@@ -122,7 +122,7 @@ val faceDeleteResult = privateIdentity.delete(uuid)
 // FaceDeleteResult object with status and message
 ```
 
-#### Validate driver lience's frontside
+#### Validate driver licence's frontside
 - This method is used to validate the face from frontside of a driver license:
 
 ```kotlin
@@ -135,7 +135,7 @@ if (documentResult.isValid) { // valid license
 }
 ```
 
-#### Validate driver lience's backside
+#### Validate driver licence's backside
 - This function scans the barcode from backside of the license: 
 
 ```kotlin
@@ -146,6 +146,14 @@ if (barcodeResult.isValid) { // valid barcode
     // ... Look at the BarcodeResult.java for more information
 } else {
 }
+```
+
+#### Estimate age 
+- This method estimates ages of faces in the image
+
+```kotlin
+val ageEstimateResult = privateIdentity.estimateAge(imageData)
+// print ageEstimateResult.toString()
 ```
 
 ## Compatibility
