@@ -21,7 +21,7 @@ privacy.
 ## How do I use CryptoNets™ Android library?
 
 ### Prerequisite
-- Sign up on the waitlist on https://private.id to obtain your API Key.
+- Sign up on the wait-list on https://private.id to obtain your API Key and Server URL.
 
 ### How To Install
 - Use Gradle
@@ -45,8 +45,7 @@ implementation 'com.github.openinfer:cryptonets-lib:1.1.3'
 - initialize the library once only in your application class
 ```kotlin
 val config = PrivateIdentityConfig
-        .Builder(context, "Your api key")
-        .serverUrl("Your server url") //optional
+        .Builder(context, "Your api key", "your server URL")
         .localStorage("Your storage path") // optional - default is your internal app's folder
         .logEnabled(true) // optional - default is false
         .build()
