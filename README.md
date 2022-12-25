@@ -63,7 +63,7 @@ val imageData = ImageData(bitmap) // this should be call off UI thread to avoid 
 
 - The function detects if there is a valid face in the 'ImageData` object:
 ```kotlin
-val faceValidateResult = privateIdentity.is_valid(imageData)
+val faceValidateResult = privateIdentity.isValid(imageData)
 ```
 - In `faceValidateResult`, we have `ageFactor` and `faceValidation`:
 
