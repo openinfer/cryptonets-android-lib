@@ -20,6 +20,10 @@ privacy.
 
 ## How do I use CryptoNets™ Android library?
 
+### Documentation
+
+For detailed documentation and instructions, please refer to the following link https://docs.private.id/cryptonets-android-sdk/index.html
+
 ### Prerequisite
 - Sign up on the wait-list on https://private.id to obtain your API Key and Server URL.
 
@@ -164,6 +168,4 @@ val ageEstimateResult = privateIdentity.estimateAge(imageData)
 ## Samples
 
 This repository contains all available samples: https://github.com/openinfer/samples
-
-
 
